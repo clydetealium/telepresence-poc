@@ -110,11 +110,9 @@ pipeline {
                     steps {
                         container(imgBuildAndUpload) {
                             sh """
-                            local project_subdirs=info,locality,personality
-                            for project_subdir in \${project_subdirs//,/ }
-                            do
-                                jenkins/docker_tag_and_push.sh ${env.SOURCE_VERSION} \$COMPONENT_PREFIX_\$project_subdir
-                            done
+                            jenkins/docker_tag_and_push.sh ${env.SOURCE_VERSION} ${COMPONENT_PREFIX}_info
+                            jenkins/docker_tag_and_push.sh ${env.SOURCE_VERSION} ${COMPONENT_PREFIX}_locality
+                            jenkins/docker_tag_and_push.sh ${env.SOURCE_VERSION} ${COMPONENT_PREFIX}_personality
                             """
                         }
                     }
@@ -124,13 +122,11 @@ pipeline {
                     when { expression { env.RUNNING_ON_DEFAULT_BRANCH } }
                     steps {
                         container(imgBuildAndUpload) {
-                            sh '''
-                            local project_subdirs=info,locality,personality
-                            for project_subdir in \${project_subdirs//,/ }
-                            do
-                                jenkins/docker_tag_and_push.sh latest \$COMPONENT_PREFIX_\$project_subdir
-                            done
-                            '''
+                            sh """
+                            jenkins/docker_tag_and_push.sh latest ${COMPONENT_PREFIX}_info
+                            jenkins/docker_tag_and_push.sh latest ${COMPONENT_PREFIX}_locality
+                            jenkins/docker_tag_and_push.sh latest ${COMPONENT_PREFIX}_personality
+                            """
                         }
                     }
                 }
