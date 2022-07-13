@@ -4,7 +4,7 @@ source ${WORKSPACE}/jenkins/logging.sh
 
 # jansi.force only works when defined in MAVEN_OPTS, style.color only works when passed as an argument
 export MAVEN_OPTS="-Djansi.force=true"
-export COMMON_MVN_OPTIONS="--settings settings.xml --batch-mode --errors --no-transfer-progress --threads 4.0C -Dstyle.color=always"
+export COMMON_MVN_OPTIONS="--settings ../settings.xml --batch-mode --errors --no-transfer-progress --threads 4.0C -Dstyle.color=always"
 
 mvn_versions_set() {
   log_messagec magenta "Running Command: mvn_versions_set On Branch: ${GIT_BRANCH}"
