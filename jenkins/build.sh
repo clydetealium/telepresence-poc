@@ -7,7 +7,6 @@ export MAVEN_OPTS="-Djansi.force=true"
 export COMMON_MVN_OPTIONS="--settings ../settings.xml --batch-mode --errors --no-transfer-progress --threads 4.0C -Dstyle.color=always"
 
 mvn_versions_set() {
-  pushd info
   log_messagec magenta "Running Command: mvn_versions_set On Branch: ${GIT_BRANCH}"
   if [ ${RUNNING_ON_DEFAULT_BRANCH} == 'true' ]; then
     RELEASE_VERSION=REL.$(date +%Y-%m-%d_%H%M)
