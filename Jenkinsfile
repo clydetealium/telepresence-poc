@@ -1,3 +1,6 @@
+String build = 'build'
+String imgBuildAndUpload = 'image-build-and-upload'
+
 library(
     identifier: 'jenkins-shared-lib@v2.0.0',
     retriever: modernSCM(
@@ -36,7 +39,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                scm checkout
+                checkout scm
             }
         }
 
@@ -84,7 +87,7 @@ pipeline {
                 stage('Build Jar') {
                     steps {
                         container(build) {
-                            sh "ACTION=BUILD_JAR ${jenkinsBuildCmd}"
+                            sh "ACTION=BUILD_JAR ./jenkins/build.sh"
                         }
                     }
                 }
@@ -110,9 +113,11 @@ pipeline {
                     steps {
                         container(imgBuildAndUpload) {
                             sh """
-                            jenkins/docker_tag_and_push.sh ${env.SOURCE_VERSION} ${COMPONENT_PREFIX}_info
-                            jenkins/docker_tag_and_push.sh ${env.SOURCE_VERSION} ${COMPONENT_PREFIX}_locality
-                            jenkins/docker_tag_and_push.sh ${env.SOURCE_VERSION} ${COMPONENT_PREFIX}_personality
+                            local project_subdirs=info,locality,personality
+                            for project_subdir in \${project_subdirs//,/ }
+                            do
+                                jenkins/docker_tag_and_push.sh ${env.SOURCE_VERSION} \$COMPONENT_PREFIX_\$project_subdir
+                            done
                             """
                         }
                     }
@@ -122,11 +127,13 @@ pipeline {
                     when { expression { env.RUNNING_ON_DEFAULT_BRANCH } }
                     steps {
                         container(imgBuildAndUpload) {
-                            sh """
-                            jenkins/docker_tag_and_push.sh latest ${COMPONENT_PREFIX}_info
-                            jenkins/docker_tag_and_push.sh latest ${COMPONENT_PREFIX}_locality
-                            jenkins/docker_tag_and_push.sh latest ${COMPONENT_PREFIX}_personality
-                            """
+                            sh '''
+                            local project_subdirs=info,locality,personality
+                            for project_subdir in \${project_subdirs//,/ }
+                            do
+                                jenkins/docker_tag_and_push.sh latest \$COMPONENT_PREFIX_\$project_subdir
+                            done
+                            '''
                         }
                     }
                 }
