@@ -92,14 +92,13 @@ pipeline {
                     steps {
                         container(imgBuildAndUpload) {
                             sh '''
-                                #!/bin/bash
                                 project_subdirs=info,locality,personality
                                 for project_subdir in ${project_subdirs//,/ }
                                 do
-                                    pushd $project_subdir
+                                    cd $project_subdir
                                     echo -n "$ARTIFACTORY_CREDENTIALS_PSW" | docker login --username "$ARTIFACTORY_CREDENTIALS_USR" --password-stdin tealium-docker-virtual-registry.jfrog.io
                                     docker build --tag $COMPONENT_PREFIX_$project_subdir .
-                                    popd
+                                    cd ..
                                 done
                               '''
                         }
