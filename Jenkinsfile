@@ -92,6 +92,7 @@ pipeline {
                     steps {
                         container(imgBuildAndUpload) {
                             sh '''
+                                #!/bin/bash
                                 project_subdirs=info,locality,personality
                                 for project_subdir in ${project_subdirs//,/ }
                                 do
