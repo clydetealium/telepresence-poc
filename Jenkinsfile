@@ -79,14 +79,14 @@ pipeline {
             }
 
             stages {
-                stage('Build Jar') {
-                    steps {
-                        container(build) {
-                            sh 'env'
-                            sh "ACTION=BUILD_JAR ./jenkins/build.sh"
-                        }
-                    }
-                }
+                // stage('Build Jar') {
+                //     steps {
+                //         container(build) {
+                //             sh 'env'
+                //             sh "ACTION=BUILD_JAR ./jenkins/build.sh"
+                //         }
+                //     }
+                // }
 
                 stage('Docker build') {
                     steps {
