@@ -96,7 +96,11 @@ pipeline {
                                 for project_subdir in ${project_subdirs//,/ }
                                 do
                                     cd $project_subdir
-                                    echo -n "$ARTIFACTORY_CREDENTIALS_PSW" | docker login --username "$ARTIFACTORY_CREDENTIALS_USR" --password-stdin tealium-docker-virtual-registry.jfrog.io
+                                    echo -n "$ARTIFACTORY_CREDENTIALS_PSW" | \
+                                      docker login \
+                                        --username "$ARTIFACTORY_CREDENTIALS_USR" \
+                                        --password-stdin tealium-docker-virtual-registry.jfrog.io
+
                                     docker build --tag $COMPONENT_PREFIX_$project_subdir .
                                     cd ..
                                 done
@@ -111,9 +115,9 @@ pipeline {
                         container(imgBuildAndUpload) {
                             sh '''
                             project_subdirs=info,locality,personality
-                            for project_subdir in \${project_subdirs//,/ }
+                            for project_subdir in ${project_subdirs//,/ }
                             do
-                                jenkins/docker_tag_and_push.sh latest \$COMPONENT_PREFIX_\$project_subdir
+                                jenkins/docker_tag_and_push.sh latest $COMPONENT_PREFIX_$project_subdir
                             done
                             '''
                         }
