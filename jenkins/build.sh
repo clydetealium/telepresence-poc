@@ -21,7 +21,7 @@ mvn_versions_set() {
 
 mvn_deploy() {
   log_messagec magenta "Running Command: mvn_deploy On Branch: ${GIT_BRANCH}"
-  mvn deploy ${COMMON_MVN_OPTIONS} -Pnative -Dquarkus.native.additional-build-args='--initialize-at-run-time=javax.imageio.ImageTypeSpecifier\,com.sun.imageio.plugins.jpeg.JPEG\$JCS\,org.apache.http.impl.auth.NTLMEngineImpl,-H:ReflectionConfigurationFiles=reflect-config.json,--allow-incomplete-classpath, --report-unsupported-elements-at-runtime' &&
+  mvn deploy ${COMMON_MVN_OPTIONS} -Pnative -Dquarkus.native.additional-build-args='--initialize-at-run-time=javax.imageio.ImageTypeSpecifier\,com.sun.imageio.plugins.jpeg.JPEG\$JCS\,org.apache.http.impl.auth.NTLMEngineImpl,--allow-incomplete-classpath, --report-unsupported-elements-at-runtime' &&
   log_messagec green "mvn_deploy Complete" ||
   msg_and_exit 3 "mvn_deploy Failed"
 }
