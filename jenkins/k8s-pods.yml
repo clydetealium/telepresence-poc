@@ -1,0 +1,110 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: notification-publisher
+  labels:
+    purpose: cicd-jenkins-agent
+    spotinst.io/restrict-scale-down: "true"
+spec:
+  serviceAccountName: jenkins-service-account
+  imagePullSecrets:
+    - name: jfrog-dockerconfigjson
+  containers:
+    - name: jnlp
+      image: tealium-docker-virtual-registry.jfrog.io/jenkins/inbound-agent:4.11.2-2
+      # jnlp image entrypoint does what we want so we do not specify a command
+      resources:
+        requests:
+          cpu: 250m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 256Mi
+      env:
+        - name: ACCOUNT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: environment-metadata
+              key: accountID
+        - name: ACCOUNT_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: environment-metadata
+              key: accountName
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: environment-metadata
+              key: environmentName
+        - name: ENVIRONMENT_PREFIX
+          valueFrom:
+            configMapKeyRef:
+              name: environment-metadata
+              key: environmentPrefix
+        - name: ENVIRONMENT_TYPE
+          valueFrom:
+            configMapKeyRef:
+              name: environment-metadata
+              key: environmentType
+        - name: PLATFORM_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: environment-metadata
+              key: platformName
+        - name: REGION
+          valueFrom:
+            configMapKeyRef:
+              name: environment-metadata
+              key: region
+        - name: TEST
+          value: TEST
+    - name: build
+      image: tealium-docker-virtual-registry.jfrog.io/quarkus-build-container:graalvm-21.2.0-java-11.0.12-maven-3.8.1
+      command: [ "tail", "-f", "/dev/null" ]
+      securityContext:
+        runAsUser: 0
+      resources:
+        requests:
+          cpu: 4000m
+          memory: 6Gi
+        limits:
+          cpu: 12000m
+          memory: 12Gi
+      env:
+        - name: AWS_MAX_ATTEMPTS
+          value: "20"
+      volumeMounts:
+        - mountPath: /root/.m2
+          name: m2-repo
+    - name: webhooks
+      image: tealium-docker-virtual-registry.jfrog.io/jenkins-webhooks-container:latest
+      command: ["tail", "-f", "/dev/null"]
+      resources:
+        requests:
+          memory: 64Mi
+          cpu: 125m
+        limits:
+          memory: 512Mi
+          cpu: 1000m
+    - name: image-build-and-upload
+      image: tealium-docker-virtual-registry.jfrog.io/docker:18.05-dind
+      # dind image entrypoint does what we want so we do not specify a command
+      securityContext:
+        privileged: true
+      resources:
+        requests:
+          memory: 4Gi
+          cpu: 2000m
+        limits:
+          memory: 12Gi
+          cpu: 6000m
+      volumeMounts:
+        - name: dind-storage
+          mountPath: /var/lib/docker
+  volumes:
+    - name: dind-storage
+      emptyDir: { }
+    - name: m2-repo
+      hostPath:
+        path: /var/jenkins_home/.m2
