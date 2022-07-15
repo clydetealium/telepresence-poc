@@ -9,7 +9,7 @@ RUN mvn package -X -Pnative -Dquarkus.native.additional-build-args='--initialize
 # everything after here may change to suit our needs like ports, etc.
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 COPY --chown=1000 --from=quarkus-builder /dist /work
-EXPOSE 9090
+EXPOSE 8080
 USER 1000
 WORKDIR /work
 CMD ["./application", "-Djava.io.tmpdir=/work/tmp"]
