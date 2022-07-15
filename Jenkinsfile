@@ -31,7 +31,6 @@ pipeline {
 
     environment {
         ARTIFACTORY_CREDENTIALS = credentials('artifactory-credentials-jenkins')
-        COMPONENT_PREFIX = 'telepresence_poc'
         LOCAL_MANIFESTS_REPO = "kubernetes-environments-${env.ACCOUNT_NAME}"
         GIT_CREDS = credentials('github-cicd-bot-teal-token')
         ENVIRONMENT = "${env.ENVIRONMENT}"
@@ -76,6 +75,7 @@ pipeline {
                 GIT_COMMIT_SHA = "${sourceVersion.gitsha()}"
                 RUNNING_ON_DEFAULT_BRANCH = "${sourceVersion.runningOnDefaultBranch()}"
                 SOURCE_VERSION = "${sourceVersion.gitsha()}"
+                COMPONENT_PREFIX = 'telepresence-poc'
             }
 
             stages {
@@ -101,7 +101,8 @@ pipeline {
                                         --username "$ARTIFACTORY_CREDENTIALS_USR" \
                                         --password-stdin tealium-docker-virtual-registry.jfrog.io
 
-                                    docker build --tag $COMPONENT_PREFIX_$project_subdir .
+                                    docker build --tag "$COMPONENT_PREFIX-$project_subdir" .
+                                    docker image ls
                                     cd ..
                                 done
                               '''
@@ -117,7 +118,7 @@ pipeline {
                             project_subdirs=info,locality,personality
                             for project_subdir in ${project_subdirs//,/ }
                             do
-                                jenkins/docker_tag_and_push.sh latest $COMPONENT_PREFIX_$project_subdir
+                                jenkins/docker_tag_and_push.sh latest "$COMPONENT_PREFIX-$project_subdir"
                             done
                             '''
                         }
