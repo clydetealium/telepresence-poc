@@ -14,7 +14,7 @@ EXPOSE 8080
 # debug stuff
 RUN microdnf install curl which ncurses -y
 
-USER 1000
+# USER 1000
 
 WORKDIR /work
 CMD ["./application", "-Djava.io.tmpdir=/work/tmp"]
