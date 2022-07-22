@@ -1,6 +1,7 @@
 package com.tealium.poc;
 
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.tealium.poc.client.personality.Personality;
@@ -17,10 +18,10 @@ public class InfoBuilderTest {
         // when we don;t know Smalltown's tempereture
         Personality beaker = new Personality("Beaker", 105, "Smalltown");
         List<Personality> personalities = List.of(beaker);
-        List<Info> infos = new InfoBuilder()
+        Set<Info> infos = new InfoBuilder()
           .withPersonalities(personalities)
           .build();
-        Info actual = infos.get(0);
+        Info actual = List.copyOf(infos).get(0);
         
         // then we assume Beaker's in a good mood
         Assertions.assertEquals(expected, actual);
@@ -34,11 +35,11 @@ public class InfoBuilderTest {
         // when Smalltown is too hot
         Personality beaker = new Personality("Beaker", 105, "Smalltown");
         Locality smallTown = new Locality("Smalltown", 106);
-        List<Info> infos = new InfoBuilder()
+        Set<Info> infos = new InfoBuilder()
           .withPersonalities(List.of(beaker))
           .withLocalities(List.of(smallTown))
           .build();
-        Info actual = infos.get(0);
+        Info actual = List.copyOf(infos).get(0);
         
         // then Beaker's in a bad mood
         Assertions.assertEquals(expected, actual);
@@ -52,11 +53,11 @@ public class InfoBuilderTest {
         // when Smalltown is NOT too hot
         Personality beaker = new Personality("Beaker", 105, "Smalltown");
         Locality smallTown = new Locality("Smalltown", 75);
-        List<Info> infos = new InfoBuilder()
+        Set<Info> infos = new InfoBuilder()
           .withPersonalities(List.of(beaker))
           .withLocalities(List.of(smallTown))
           .build();
-        Info actual = infos.get(0);
+        Info actual = List.copyOf(infos).get(0);
         
         // then Beaker's in a good mood
         Assertions.assertEquals(expected, actual);
