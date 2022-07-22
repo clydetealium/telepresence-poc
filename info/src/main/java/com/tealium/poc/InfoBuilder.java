@@ -2,6 +2,7 @@ package com.tealium.poc;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,10 +24,10 @@ public class InfoBuilder {
         return this;
     }
 
-    public List<Info> build() {
+    public Set<Info> build() {
         return personalities.stream()
             .map(this::getInfo)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
 
     private Info getInfo(Personality personality) {
