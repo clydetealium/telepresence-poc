@@ -1,7 +1,7 @@
 # telepresence-poc
 This is a sample app intended to serve the purpose of demonstrating Telepresence.
 
-![Overview Diagram](./docs/telepresence-poc.png)
+![Overview Diagram](./docs/Telepresence_PoC_Arch_and_CD.svg)
 
 ## prep
 
