@@ -1,7 +1,7 @@
 # telepresence-poc
 This is a sample app intended to serve the purpose of demonstrating Telepresence.
 
-![Overview Diagram](./docs/TelepresencePoCAppArch.png)
+![Overview Diagram](./docs/Telepresence_PoC_Arch_and_CD.svg)
 
 ## prep
 
@@ -43,9 +43,18 @@ License: Apache-2.0
 % mvn help:describe -e -Dplugin=io.quarkus.platform:quarkus-maven-plugin
 ```
 
-###  package, build, and run an initial container image 
+###  package, build, and run an initial container image...
 ```
 % ./mvnw package -Pnative
 $ docker build -f src/main/docker/Dockerfile.jvm -t quarkus/personality .
 % docker run -i --rm -p 8080:8080 quarkus/personality
 ```
+
+### ... or run in dev mode
+> i.e. to run locality locally in dev mode execute the following from the locality directory.
+```
+./mvnw compile quarkus:dev -Ddebug=$DEBUG_PORT
+```
+![Overview Diagram](./docs/quarkus_in_dev_mode.gif)
+
+Repeat this :point_up: for the info and personality services if desired.

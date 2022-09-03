@@ -5,6 +5,18 @@
   <groupId>com.tealium.poc</groupId>
   <artifactId>info</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+  <distributionManagement>
+    <repository>
+      <id>maven-release</id>
+      <name>Maven Virtual Release Repository</name>
+      <url>https://tealium.jfrog.io/artifactory/maven-release</url>
+    </repository>
+    <snapshotRepository>
+      <id>maven-snapshot</id>
+      <name>Maven Virtual Snapshot Repository</name>
+      <url>https://tealium.jfrog.io/artifactory/maven-snapshot</url>
+    </snapshotRepository>
+  </distributionManagement>
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.release>11</maven.compiler.release>
@@ -34,7 +46,19 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive</artifactId>
+      <artifactId>quarkus-rest-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

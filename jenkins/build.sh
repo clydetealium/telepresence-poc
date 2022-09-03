@@ -19,27 +19,34 @@ mvn_versions_set() {
   fi
 }
 
-mvn_deploy() {
-  log_messagec magenta "Running Command: mvn_deploy On Branch: ${GIT_BRANCH}"
-  mvn deploy ${COMMON_MVN_OPTIONS} -Pnative -Dquarkus.native.additional-build-args='--initialize-at-run-time=javax.imageio.ImageTypeSpecifier\,com.sun.imageio.plugins.jpeg.JPEG\$JCS\,org.apache.http.impl.auth.NTLMEngineImpl,-H:ReflectionConfigurationFiles=reflect-config.json,--allow-incomplete-classpath, --report-unsupported-elements-at-runtime' &&
-  log_messagec green "mvn_deploy Complete" ||
-  msg_and_exit 3 "mvn_deploy Failed"
+# mvn_deploy() {
+#   log_messagec magenta "Running Command: mvn_deploy On Branch: ${GIT_BRANCH}"
+#   mvn deploy ${COMMON_MVN_OPTIONS} -Pnative -Dquarkus.native.additional-build-args='--initialize-at-run-time=javax.imageio.ImageTypeSpecifier\,com.sun.imageio.plugins.jpeg.JPEG\$JCS\,org.apache.http.impl.auth.NTLMEngineImpl,--allow-incomplete-classpath, --report-unsupported-elements-at-runtime' &&
+#   log_messagec green "mvn_deploy Complete" ||
+#   msg_and_exit 3 "mvn_deploy Failed"
+# }
+
+mvn_package() {
+  log_messagec magenta "Running Command: mvn_package On Branch: ${GIT_BRANCH}"
+  mvn package ${COMMON_MVN_OPTIONS} -Pnative &&
+  log_messagec green "mvn_package Complete" ||
+  msg_and_exit 3 "mvn_package Failed"
 }
 
-hub_release() {
-  if [[ -n ${RELEASE_VERSION} ]]; then
-    log_messagec magenta "Running Command: hub_release On Branch: ${GIT_BRANCH}"
+# hub_release() {
+#   if [[ -n ${RELEASE_VERSION} ]]; then
+#     log_messagec magenta "Running Command: hub_release On Branch: ${GIT_BRANCH}"
 
-    export GITHUB_USER=${GIT_CREDS_USR}
-    export GITHUB_TOKEN=${GIT_CREDS_PSW}
-    hub config url.https://${GIT_CREDS}@github.com/.insteadOf https://github.com/
-    git config --global user.name "${GIT_CREDS_USR}"
-    git config --global user.email "${GIT_CREDS_USR}@tealium.com"
+#     export GITHUB_USER=${GIT_CREDS_USR}
+#     export GITHUB_TOKEN=${GIT_CREDS_PSW}
+#     hub config url.https://${GIT_CREDS}@github.com/.insteadOf https://github.com/
+#     git config --global user.name "${GIT_CREDS_USR}"
+#     git config --global user.email "${GIT_CREDS_USR}@tealium.com"
 
-    hub release create --message "${RELEASE_VERSION}" $RELEASE_VERSION
-    log_messagec green "hub_release Complete"
-  fi
-}
+#     hub release create --message "${RELEASE_VERSION}" $RELEASE_VERSION
+#     log_messagec green "hub_release Complete"
+#   fi
+# }
 
 build_em() {
   local project_subdirs=info,locality,personality
@@ -47,7 +54,9 @@ build_em() {
   do
     pushd ${WORKSPACE}/$project_subdir
     pwd
-    if mvn_versions_set && mvn_deploy && hub_release; then
+    # if mvn_versions_set && mvn_deploy && hub_release; then
+    # if mvn_versions_set && mvn_deploy; then
+    if mvn_versions_set && mvn_package; then
       log_messagec green "Build Complete"
     else
       RETURN_VALUE=$?
